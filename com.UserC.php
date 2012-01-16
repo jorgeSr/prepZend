@@ -40,7 +40,7 @@
 			if ($result->isValid())
 			{					
 				$session = Zend_Registry::get('session');
-				$session->id = $authAdapter->getResultRowObject()->id; // Obtener el ID DEL USUARIO
+				$session->id = $authAdapter->getResultRowObject()->id;// Obtener el ID DEL USUARIO
 				return true;
 			}
 			
@@ -58,7 +58,7 @@
 				$user->user = $row->user;
 				$user->email = $row->email;
 				$user->pass = $row->pass;
-				return $this->sendMail($user, "Recuperacion de Contraseï¿½a");		
+				return $this->sendMail($user, "Recuperacion de Contraseña");		
 			}
 			else{
 				return "El Usuario o e-mail no existen";
@@ -107,13 +107,13 @@
 									
 			$mail = new PHPMailer();
 			$mail->IsSMTP(); 
-			$mail->Host = "mail.relojesomega.com.mx"; 
+			$mail->Host = "ssl://smtp.gmail.com"; 
 			$mail->SMTPAuth = true; 
-			$mail->Username = "u68376"; 
-			$mail->Password = "Interiore7"; 
-			$mail->Port = 25;
+			$mail->Username = "idwasoft@gmail.com"; 
+			$mail->Password = "interioremf7"; 
+			$mail->Port = 465;
 
-			$mail->From = "u68376@relojesomega.com.mx";
+			$mail->From = "idwasoft@gmail.com";
 			$mail->FromName = "PREP Mailer";
 			$mail->AddAddress($user->email, $user->user);
 			
@@ -125,8 +125,13 @@
 			$body = str_replace('%EMAIL%', $user->email, $body);
 			$body = str_replace('%CONTRASENA%', $user->pass, $body);*/
 			
-			$mail->Body = "Los datos de su cuenta son: <br>Usuario: <b>".$user->user."</b><br>Pass: <b>".$user->pass."</b><br>email: <b>".$user->email."</b>"; 
-			$mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+			$mail->MsgHTML(file_get_contents("mail/index.html")); 
+			$body = $mail->Body;
+			$body = str_replace('%ASUNTO%', $sub, $body);
+			$body = str_replace('%USUARIO%', $user->user, $body);
+			$body = str_replace('%EMAIL%', $user->email, $body);
+			$body = str_replace('%CONTRASENA%', $user->pass, $body);
+			$mail->MsgHTML($body);
 
 			if($mail->Send())
 			{

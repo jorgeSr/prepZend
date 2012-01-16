@@ -8,7 +8,7 @@
 			return UserC::getSessionId();
 		}
 		
-		public function create($category){
+		public function create(Category $category){
 			$mysql = mysql_connect(DATABASE_SERVER, DATABASE_USERNAME, DATABASE_PASSWORD) or die("Error MySQL.");
 	     	mysql_select_db(DATABASE_NAME);
 	     	
@@ -19,7 +19,7 @@
 		}
 		
 
-		public function update($category){
+		public function update(Category $category){
 			$mysql = mysql_connect(DATABASE_SERVER, DATABASE_USERNAME, DATABASE_PASSWORD) or die("Error MySQL.");
 	     	mysql_select_db(DATABASE_NAME);
 	     	
@@ -27,22 +27,34 @@
 					WHERE id=".$category->id;
 			mysql_query($query);
 			mysql_close($mysql);
-		}			
+		}	
+
+		public function remove(Category $category){
+			$mysql = mysql_connect(DATABASE_SERVER, DATABASE_USERNAME, DATABASE_PASSWORD) or die("Error MySQL.");
+		     	mysql_select_db(DATABASE_NAME);
+			mysql_query("DELETE FROM transaction WHERE categoryId =".$category->id);
+			mysql_query("DELETE FROM category WHERE id =".$category->id);
+			mysql_close($mysql);
+			return $category;
+		}		
 
 		public function findAll(){
 			$mysql = mysql_connect(DATABASE_SERVER, DATABASE_USERNAME, DATABASE_PASSWORD) or die("Error MySQL.");
-	     	mysql_select_db(DATABASE_NAME);
+		     	mysql_select_db(DATABASE_NAME);
 			$query = "SELECT * FROM category WHERE userId = ".UserC::getSessionId();	
-		    $result = mysql_query($query);
-		    $numero = mysql_num_rows($result);
-		     
-		    if($numero != 0)
-		    {
-		    	return $result;
-		    }
-		     
-				return false;
+			
+			$result = mysql_query($query);
+			return $result;
 		}
 		
+		public function findByType($type){
+			$mysql = mysql_connect(DATABASE_SERVER, DATABASE_USERNAME, DATABASE_PASSWORD) or die("Error MySQL.");
+		     	mysql_select_db(DATABASE_NAME);
+			$query = "SELECT * FROM category WHERE type=".$type." AND userId = ".UserC::getSessionId();	
+			
+			$result = mysql_query($query);
+			return $result;
+		}
+
 	}
 ?>

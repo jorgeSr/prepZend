@@ -4,5 +4,6 @@
 	     public $userId;
 	     public $iniDate;
 	     public $endDate;
+
 	}
 ?>
